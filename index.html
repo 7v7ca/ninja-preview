@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Northern Ninja Services</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap">
+<style>
+:root{--g:#2E7D32;--gd:#1B5E20;--ink:#1A1A1A;--soft:#F4F5F6;--line:#E3E6E8;--mut:#555555}
+*{box-sizing:border-box}
+html,body{margin:0;background:#fff}
+body{font-family:Ubuntu,system-ui,sans-serif;color:var(--ink)}
+a{color:var(--g)}a:hover{color:var(--gd)}
+button{font-family:inherit}
+.hidden{display:none!important}
+.wrap{max-width:1240px;margin:0 auto}
+section[id],div[id^="cat-"]{scroll-margin-top:76px}
+
+/* header */
+header{background:var(--soft);position:sticky;top:0;z-index:50;border-bottom:1px solid var(--line)}
+.hdr{padding:14px clamp(16px,3vw,32px);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px}
+.hdr img{height:44px;width:auto;display:block}
+nav.main{display:flex;flex-wrap:wrap;align-items:center;gap:12px clamp(16px,3vw,32px);font-size:16px;font-weight:500;text-transform:uppercase;letter-spacing:.01em}
+.nav{display:inline-block;text-decoration:none;color:var(--g);transition:transform .35s cubic-bezier(.2,.8,.2,1)}
+.nav[aria-current="page"]{color:var(--ink)}
+.nav::after{content:"";display:block;height:2px;width:0;margin:4px auto 0;background:currentColor;border-radius:2px;transition:width .35s cubic-bezier(.2,.8,.2,1)}
+.nav:hover,.nav:focus-visible{transform:scale(1.1)}
+.nav:hover::after,.nav:focus-visible::after{width:60%}
+
+/* drag tracks */
+.track{display:flex;overflow-x:auto;scrollbar-width:none;cursor:grab;user-select:none;-webkit-user-select:none}
+.track::-webkit-scrollbar{display:none}
+.arrow{width:46px;height:46px;border-radius:999px;border:0;padding:0;background:rgba(255,255,255,.6);color:var(--ink);cursor:pointer;display:flex;align-items:center;justify-content:center;position:absolute;top:50%;transform:translateY(-50%);box-shadow:0 1px 6px rgba(0,0,0,.12);z-index:5}
+.arrow.l{left:18px}.arrow.r{right:18px}
+
+/* service tiles */
+.svc{flex:0 0 calc(100% / 3);min-width:280px;position:relative;height:330px;border:0;margin:0;padding:32px;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;text-align:center;text-decoration:none;background-size:cover;background-repeat:no-repeat;background-color:#46564A}
+.svc,.svc:hover,.svc:focus,.svc:visited{color:#fff}
+.svc{overflow:hidden;isolation:isolate}
+.svc::before{content:"";position:absolute;inset:0;background:inherit;z-index:-1;transform-origin:center center}
+.svc.on::before{animation:drift 16s ease-in-out infinite alternate}
+@keyframes drift{0%{transform:scale(1) translateX(0)}100%{transform:scale(1.12) translateX(-3%)}}
+@media (prefers-reduced-motion: reduce){.svc.on::before{animation:none}}
+.svc-title{display:inline-block;font-size:30px;font-weight:500;line-height:1.2;max-width:320px;text-shadow:0 2px 12px rgba(0,0,0,.45);transition:transform .35s cubic-bezier(.2,.8,.2,1)}
+.svc-title::after{content:"";display:block;height:2px;width:0;margin:12px auto 0;background:#fff;border-radius:2px;transition:width .35s cubic-bezier(.2,.8,.2,1)}
+.svc:hover .svc-title,.svc:focus-visible .svc-title{transform:scale(1.1)}
+.svc:hover .svc-title::after,.svc:focus-visible .svc-title::after{width:60%}
+.svc-fade{position:absolute;left:0;right:0;bottom:0;height:45px;background:linear-gradient(to top,#fff 0%,rgba(255,255,255,.85) 18%,rgba(255,255,255,0) 100%);pointer-events:none;opacity:0;transition:opacity .8s ease-in-out}
+.svc.on .svc-fade{opacity:1}
+.svc-strata{background-image:linear-gradient(rgba(0,0,0,.38),rgba(0,0,0,.38)),url(img/svc-strata.jpg);background-position:center 55%}
+.svc-landscape{background-image:linear-gradient(rgba(0,0,0,.38),rgba(0,0,0,.38)),url(img/svc-landscape.jpg);background-position:center 60%}
+.svc-cleaning{background-image:linear-gradient(rgba(0,0,0,.38),rgba(0,0,0,.38)),url(img/svc-exterior.jpg);background-position:center 38%}
+.svc-all{background-image:linear-gradient(rgba(0,0,0,.38),rgba(0,0,0,.38)),url(img/svc-all.jpg);background-position:center 32%}
+
+#service-info{padding:64px 32px 56px}
+#info{max-width:980px;margin:0 auto;display:flex;flex-direction:column;gap:24px;transition:opacity .4s ease-in-out}
+.info-row{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:16px 40px}
+.info-row p{margin:0;flex:1 1 520px;min-width:0;font-size:19px;font-weight:300;line-height:1.5;color:#3D3D3D;white-space:pre-line}
+.more{flex:0 0 auto;font-size:18px;font-weight:500;text-decoration:none;display:flex;align-items:center;gap:8px}
+.chips{margin:0;padding:0;list-style:none;display:flex;flex-wrap:wrap;gap:10px}
+.chips li{font-size:16px;padding:9px 16px;border-radius:4px;background:#F1F5F7}
+
+/* instagram */
+.ig-track{padding:64px 0;margin:-64px 0;pointer-events:none;touch-action:pan-y pan-x}
+.ig-track>*{pointer-events:auto}
+.ig{flex:0 0 20%;min-width:132px;aspect-ratio:1/1;border:4px solid #fff;position:relative;transition:transform .9s cubic-bezier(.25,.8,.25,1)}
+.ig img{display:block;width:100%;height:100%;object-fit:cover;pointer-events:none}
+.ig:hover,.ig:has(:focus-visible){transform:scale(1.3);z-index:3}
+.ig-ov{position:absolute;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center}
+.ig-btn{width:60px;height:60px;border-radius:999px;background:var(--soft);color:var(--g);display:flex;align-items:center;justify-content:center;text-decoration:none}
+
+/* reviews */
+#reviews{background:var(--soft);padding:36px 0 40px}
+.rv-row{width:100%;padding:4px 24px;display:flex;flex-wrap:nowrap;gap:20px;overflow-x:auto;scrollbar-width:none}
+.rv-row::-webkit-scrollbar{display:none}
+.rv{flex:1 1 0;min-width:240px;margin:0;background:#fff;border-radius:4px;padding:20px 22px;display:flex;flex-direction:column;gap:12px}
+.rv blockquote{margin:0;font-size:17px;font-weight:300;line-height:1.6}
+.rv figcaption{margin-top:auto;display:flex;flex-direction:column;gap:2px}
+.rv-go{flex:0 0 210px;min-height:180px;background:var(--g);color:#fff;border-radius:4px;text-decoration:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px;text-align:center}
+.rv-go:hover{color:#fff;background:var(--gd)}
+
+/* contact */
+#contact{background:var(--soft)}
+.area{position:relative;color:#fff;min-height:190px;padding:44px clamp(20px,5vw,64px) 40px;display:flex;flex-direction:column;justify-content:flex-end;background-color:#2F3A31;background-image:linear-gradient(rgba(12,32,16,.55),rgba(12,32,16,.55)),url(img/area-map-7.jpg);background-size:cover;background-position:center 45%}
+.area h2{margin:0;font-weight:500;font-size:clamp(16px,2.9vw,42px);line-height:1.2;white-space:nowrap;text-shadow:0 2px 12px rgba(0,0,0,.4)}
+.area small{position:absolute;right:12px;bottom:8px;font-size:11px;color:#E2E8E3}
+.ct{padding:48px clamp(16px,4vw,32px) 72px;display:flex;flex-wrap:wrap;align-items:flex-start;gap:48px 64px}
+.ct-form{flex:1 1 calc(50% - 32px);min-width:300px;display:flex;flex-direction:column;gap:24px}
+.ct-form h2{margin:0;font-weight:500;font-size:32px}
+form{display:flex;flex-wrap:wrap;gap:18px}
+.fld{flex:1 1 260px;display:flex;flex-direction:column;gap:6px;font-size:14px;font-weight:500;min-width:0}
+.full{flex:1 1 100%}
+.inp{width:100%;font-family:inherit;font-size:16px;padding:12px 14px;border-radius:4px;border:1px solid #C9D0D4;background:#fff;color:var(--ink)}
+.btn-o{font-family:inherit;font-size:16px;font-weight:500;padding:0 20px;min-height:46px;border-radius:4px;border:1.5px solid var(--g);background:#fff;color:var(--g);cursor:pointer}
+.pick{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px}
+.pick li{display:flex;align-items:center;gap:6px;background:var(--g);color:#fff;border-radius:999px;padding:6px 6px 6px 14px;font-size:15px;font-weight:500}
+.pick button{width:28px;height:28px;border-radius:999px;border:0;padding:0;background:rgba(255,255,255,.22);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center}
+fieldset{border:0;margin:0;padding:0;min-width:0;display:flex;flex-direction:column;gap:10px}
+legend{padding:0;font-size:14px;font-weight:500;margin-bottom:10px}
+.radios{display:flex;flex-wrap:wrap;gap:10px}
+.radios label{display:flex;align-items:center;gap:10px;font-size:16px;padding:10px 14px;border-radius:4px;border:1px solid #C9D0D4;background:#fff;cursor:pointer}
+.radios input{width:18px;height:18px;margin:0;accent-color:var(--g)}
+.send{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px;margin-top:4px}
+.seg{font-family:inherit;font-size:16px;font-weight:500;padding:11px 18px;border-radius:4px;cursor:pointer;border:1.5px solid var(--g);background:#fff;color:var(--g)}
+.seg[aria-checked="true"]{background:var(--g);color:#fff}
+.submit{font-family:inherit;font-size:18px;font-weight:500;padding:14px 28px;border-radius:4px;border:0;background:var(--g);color:#fff;cursor:pointer;display:flex;align-items:center;gap:10px}
+.note{flex:1 1 100%;margin:0;font-size:14px;color:var(--mut)}
+aside.det{flex:1 1 calc(50% - 32px);min-width:280px;display:flex;flex-direction:column;gap:32px;padding-top:62px}
+.lbl{font-size:14px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--mut)}
+.big{text-decoration:none;display:flex;align-items:center;gap:12px;font-size:24px;font-weight:500}
+dl{margin:0;display:grid;grid-template-columns:repeat(2,minmax(0,max-content));gap:8px 28px;font-size:18px}
+dt{font-weight:500}dd{margin:0}
+
+/* services page */
+.sp-top{padding:28px clamp(16px,3vw,32px) 32px}
+.sp-top .wrap{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 22px}
+.sp-top h1{margin:0;font-weight:500;font-size:clamp(28px,3.4vw,42px);line-height:1.2}
+.sp-top p{margin:0;font-size:clamp(17px,1.6vw,21px);font-weight:300;line-height:1.5;color:#3D3D3D}
+.cats{padding:0 clamp(16px,3vw,32px) 72px}
+.cats .wrap{border-top:1px solid var(--line)}
+.cat{border-bottom:1px solid var(--line)}
+.acc{width:100%;display:flex;align-items:center;gap:18px;padding:24px 20px;border:0;background:transparent;text-align:left;cursor:pointer}
+.acc-ic{flex:0 0 auto;width:46px;height:46px;border-radius:999px;background:var(--soft);color:var(--g);display:flex;align-items:center;justify-content:center;transition:transform .45s cubic-bezier(.2,.8,.2,1),background-color .25s}
+.cat:nth-child(odd) .acc-ic{background:#fff}
+.acc:hover .acc-ic{background:#E6EEE7}
+.cat.open .acc-ic{transform:rotate(180deg)}
+.acc-name{font-size:26px;font-weight:500;line-height:1.25;color:var(--g)}
+.panel{display:grid;grid-template-rows:0fr;transition:grid-template-rows .45s cubic-bezier(.2,.8,.2,1)}
+.panel>div{overflow:hidden;min-height:0}
+.cat.open .panel{grid-template-rows:1fr}
+.cat.open .panel>div{overflow:visible}
+.pin{padding:0 20px 32px 84px;opacity:0;transition:opacity .45s ease;display:flex;flex-wrap:wrap;align-items:flex-start;gap:24px 48px}
+.cat.open .pin{opacity:1}
+.subs{flex:0 1 300px;min-width:220px;margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:4px}
+.sub{width:100%;display:flex;align-items:center;gap:6px;padding:12px 14px;border:0;border-radius:4px;background:transparent;font-size:19px;font-weight:300;color:var(--ink);text-align:left;cursor:pointer;transition:background-color .25s,color .25s}
+.sub:hover{background:#EEF4EE}
+.sub.on{background:#E6EEE7;color:var(--g);font-weight:500}
+.det-area{flex:1 1 420px;min-width:0;transition:opacity .35s ease}
+.ph{border:1.5px dashed #C9D0D4;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:15px;color:var(--mut);background:rgba(255,255,255,.4)}
+.ph-main{position:relative;margin-top:-50px;width:400px;height:280px;max-width:100%}
+.sub-det{display:flex;flex-wrap:wrap;align-items:flex-start;gap:24px 32px}
+.sub-det p{flex:1 1 220px;min-width:0;margin:8px 0 0;font-size:18px;font-weight:300;line-height:1.7;color:#3D3D3D}
+.ph-sub{flex:0 0 auto;width:240px;max-width:100%;aspect-ratio:1/1;font-size:14px}
+
+footer{background:var(--soft);border-top:1px solid var(--line)}
+.ft{padding:28px 32px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px;font-size:15px;color:#444}
+.ft span:last-child{display:flex;gap:24px}
+
+@media (max-width:640px){
+  .pin{padding-left:20px}
+  .ph-main{margin-top:0}
+  aside.det{padding-top:0}
+}
+</style>
+</head>
+<body>
+
+<header>
+<div class="wrap hdr">
+<a href="#home" data-go="home-top" aria-label="Northern Ninja Services home"><img src="img/logo-wordmark.png" alt="Northern Ninja Services"></a>
+<nav class="main" aria-label="Main">
+<a class="nav only-services" href="#home" data-go="home-top">Home</a>
+<a class="nav" id="nav-services" href="#services" data-go="services-top">Services</a>
+<a class="nav only-home" href="#home" data-go="work">Our Work</a>
+<a class="nav" href="#home" data-go="reviews">Reviews</a>
+<a class="nav" href="#home" data-go="contact">Contact</a>
+</nav>
+</div>
+</header>
+
+<main>
+<!-- ============ HOME ============ -->
+<div id="page-home">
+<section id="home-services" aria-label="Services" style="position:relative">
+<div class="track" id="svc-track"></div>
+<button type="button" class="arrow l hidden" id="svc-l" aria-label="Previous services"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button>
+<button type="button" class="arrow r" id="svc-r" aria-label="More services"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button>
+</section>
+<section id="service-info" aria-live="polite"><div id="info"></div></section>
+
+<section id="work" aria-label="Latest work on Instagram">
+<div style="position:relative">
+<div class="track ig-track" id="ig-track"></div>
+<button type="button" class="arrow l hidden" id="ig-l" aria-label="Previous photos"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button>
+<button type="button" class="arrow r" id="ig-r" aria-label="More photos"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button>
+</div>
+</section>
+</div>
+
+<!-- ============ SERVICES ============ -->
+<div id="page-services" class="hidden">
+<section class="sp-top" id="services-top">
+<div class="wrap">
+<h1>Ninjas can do it all!</h1>
+<p>Experienced and knowledgeable for all your needs</p>
+</div>
+</section>
+<section class="cats" aria-label="Service categories"><div class="wrap" id="cats"></div></section>
+</div>
+
+<!-- ============ SHARED: REVIEWS + CONTACT ============ -->
+<section id="reviews">
+<div class="rv-row" id="rv-row"></div>
+</section>
+
+<section id="contact">
+<div class="area">
+<h2>Serving Richmond, Ladner, and South Vancouver</h2>
+</div>
+<div class="wrap ct">
+<div class="ct-form">
+<h2>Inquire:</h2>
+<form id="quote" aria-label="Request a quote" novalidate>
+<label class="fld">Name<input class="inp" name="name" type="text" required autocomplete="name"></label>
+<label class="fld">Phone<input class="inp" name="phone" type="tel" required autocomplete="tel"></label>
+<label class="fld">Email<input class="inp" name="email" type="email" autocomplete="email"></label>
+<label class="fld">Property address<input class="inp" name="address" type="text" autocomplete="street-address"></label>
+<div class="full" style="display:flex;flex-direction:column;gap:10px;min-width:0">
+<label for="svc-input" style="font-size:14px;font-weight:500">Services needed</label>
+<div style="display:flex;gap:8px">
+<input id="svc-input" class="inp" type="text" list="svc-suggest" placeholder="Pick from the list or type your own…" autocomplete="off" style="flex:1 1 auto;min-width:0">
+<datalist id="svc-suggest"></datalist>
+<button type="button" class="btn-o" id="svc-add">Add</button>
+</div>
+<ul class="pick" id="picked" aria-label="Selected services"></ul>
+</div>
+<fieldset class="full">
+<legend>Preferred contact method</legend>
+<div class="radios">
+<label><input type="radio" name="contactMethod" value="Text">Text</label>
+<label><input type="radio" name="contactMethod" value="Call">Call</label>
+<label><input type="radio" name="contactMethod" value="Email">Email</label>
+</div>
+</fieldset>
+<label class="fld full">Message<textarea class="inp" name="message" rows="4" style="resize:vertical"></textarea></label>
+<div class="full send">
+<div role="radiogroup" aria-label="Send request by" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+<span style="font-size:14px;font-weight:500;margin-right:4px">Send request by</span>
+<button type="button" class="seg" role="radio" aria-checked="true" data-send="email">Email</button>
+<button type="button" class="seg" role="radio" aria-checked="false" data-send="text">Text message</button>
+</div>
+<button type="submit" class="submit">Send Request <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m10.5 8 4 4-4 4"/></svg></button>
+</div>
+<p class="note" id="form-note" role="status"></p>
+</form>
+</div>
+<aside class="det" aria-label="Contact details">
+<div style="display:flex;flex-direction:column;gap:8px"><span class="lbl">Phone</span>
+<a class="big" href="tel:+12365163910"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2Z"/></svg>(236) 516-3910</a></div>
+<div style="display:flex;flex-direction:column;gap:8px"><span class="lbl">Email</span>
+<a class="big" href="mailto:info@ninjaservices.ca"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg>info@ninjaservices.ca</a></div>
+<div style="display:flex;flex-direction:column;gap:8px"><span class="lbl">Instagram</span>
+<a class="big" href="https://www.instagram.com/northernninjaservices/"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3Z"/><circle cx="12" cy="13" r="3.5"/></svg>northernninjaservices</a></div>
+<div style="display:flex;flex-direction:column;gap:10px"><span class="lbl">Hours</span>
+<dl><dt>Monday – Friday</dt><dd>9:00am – 5:00pm</dd><dt>Saturday</dt><dd>10:00am – 4:00pm</dd><dt>Sunday</dt><dd>Closed</dd></dl></div>
+</aside>
+</div>
+</section>
+</main>
+
+<footer>
+<div class="wrap ft">
+<span>© 2026 Northern Ninja Services · Richmond, Ladner &amp; South Vancouver</span>
+<span><a href="https://www.instagram.com/northernninjaservices/">Instagram</a><a href="https://www.facebook.com/northernninjaservices">Facebook</a><a href="https://www.google.com/search?q=northern+ninja+services">Google</a></span>
+</div>
+</footer>
+
+<script>
+(function () {
+'use strict';
+var IG_URL = 'https://www.instagram.com/northernninjaservices/';
+var CAM = '<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3Z"/><circle cx="12" cy="13" r="3.5"/></svg>';
+var ARROW_R = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>';
+var STAR = '<svg width="20" height="20" viewBox="0 0 24 24" fill="#E3A008" aria-hidden="true"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1L12 2Z"/></svg>';
+function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+function $(id) { return document.getElementById(id); }
+
+/* ---------- data ---------- */
+var ALL_SERVICES = ['Residential Maintenance', 'Pruning', 'Irrigation', 'Rock / Mulch', 'Garden Design', 'Pavers', 'Artificial Grass Instalation', 'Fence Repair', 'Window Cleaning', 'Gutter Cleaning', 'Pressure Washing', 'Soft Washing'];
+var FORM_SERVICES = ['Strata & Commercial Maintenance'].concat(ALL_SERVICES, ['Other / Not sure']);
+var HOME_SERVICES = [
+  { id: 'strata', title: 'Strata & Commercial Maintenance', cat: 'strata',
+    blurb: 'Keep your property looking sharp all season with competitive and flexible contracts that fit your individual requirements.\n\nGreat attentive communication and expert advice on your landscape needs and ideas.\n\nClient offers for your gutter cleaning and fascia soft washing. ',
+    items: ['Lawn Mowing and Edging', 'Garden Maintenance', 'Hedge Trimming', 'Pruning and Trimming', 'Leaf Clean Up'] },
+  { id: 'landscape', title: 'Landscape Projects', cat: 'landscape',
+    blurb: 'From garden redesigns to full turf installations, tell us your idea and we’ll bring it to life!\n\nWe offer expert advice, work with your vision and budget, and bring the right tools necessary to safely and efficiently transform your space.',
+    items: ['Garden Bed Design', 'Plant Installation', 'Mulch, Soil, River Rock', 'Artificial Turf', 'Lawn Repair'] },
+  { id: 'cleaning', title: 'Exterior Cleaning', cat: 'exterior',
+    blurb: 'Keep your residential or commercial property looking great!\n\nAvoid any fall injuries by maintaining your paths clean of moss or algee.\n\nFull services from pressure washing to gutter cleaning.',
+    items: ['Pressure Washing', 'House Siding Cleaning', 'Exterior Window Cleaning', 'Gutter Cleaning'] },
+  { id: 'all', title: 'See All Services', isAll: true }
+];
+var IG_PHOTOS = ['post1', 'post2', 'post3', 'post4', 'post5', 'post7', 'post8', 'post9', 'post10'];
+var CATEGORIES = [
+  { id: 'strata', name: 'Strata and Commercial Maintenance', items: [
+    ['Landscape Maintenance', 'Scheduled grounds care that keeps common areas tidy and looking sharp all season.'],
+    ['Planting', 'Seasonal and permanent plantings to refresh entrances, beds and common areas.'],
+    ['Landscape Projects', 'Larger upgrades such as new beds, turf, paths and garden redesigns for your property.'],
+    ['Exterior Cleaning', 'Pressure washing, soft washing, gutters and windows to keep buildings and walkways clean.'] ] },
+  { id: 'landscape', name: 'Landscape Projects', items: [
+    ['Artificial Turf Installation', 'Low-maintenance artificial turf, installed on a properly prepared base.'],
+    ['Garden Designs', 'New garden layouts and plant choices that suit your space, light and style.'],
+    ['Irrigation', 'Watering systems that keep your lawn and garden healthy with less effort.'],
+    ['Soil / Mulch / River Rock', 'Fresh soil, mulch or river rock to finish beds and borders.'],
+    ['Paver Paths', 'Paver walkways and paths that tie your outdoor space together.'] ] },
+  { id: 'exterior', name: 'Exterior Cleaning', items: [
+    ['Pressure Washing', 'High-pressure cleaning for driveways, patios, pavers and other hard surfaces.'],
+    ['Soft Washing', 'Low-pressure cleaning for siding, roofs and delicate surfaces.'],
+    ['Gutter Cleaning', 'Clearing leaves and debris so your gutters and downspouts drain properly.'],
+    ['Window Cleaning', 'Streak-free exterior window cleaning for homes and commercial buildings.'] ] },
+  { id: 'lawns', name: 'Lawns', items: [
+    ['Sod Installation', 'A new lawn laid on prepared soil for an instant, even finish.'],
+    ['Seeding', 'Seeding and overseeding to fill in thin or bare patches.'],
+    ['Power Raking', 'Removing thatch and moss so your lawn can breathe and grow back thicker.'],
+    ['Aeration', 'Loosening compacted soil so water, air and nutrients reach the roots.'],
+    ['Mowing', 'Regular mowing and edging to keep your lawn neat all season.'] ] },
+  { id: 'gardenbeds', name: 'Garden Bed Maintenance', items: [
+    ['Weeding', 'We pull weeds by hand, roots and all, so your garden beds stay clean and your plants have room to grow.'],
+    ['Pruning and Trimming', 'Shaping shrubs and perennials to keep them tidy and encourage healthy growth.'],
+    ['Leaf Clean Up', 'Clearing fallen leaves and debris from beds, lawns and walkways.'],
+    ['Mulch Install', 'Fresh mulch to hold in moisture, keep weeds down and give your beds a finished look.'],
+    ['Irrigation', 'Checking and adjusting watering systems so your garden gets the water it needs.'] ] },
+  { id: 'pruning', name: 'Trimming / Pruning', items: [
+    ['Plant Pruning', 'Pruning shrubs and plants to keep them healthy, shapely and well-sized.'],
+    ['Tree Trimming', 'Trimming smaller trees to tidy their shape and clear branches from buildings and paths.'] ] },
+  { id: 'fences', name: 'Fences', items: [
+    ['Post Repair', 'Fixing or replacing leaning and rotted fence posts.'],
+    ['Panel Swap', 'Replacing damaged fence panels to restore your fence.'] ] },
+  { id: 'hedges', name: 'Hedges', items: [
+    ['Hedge Planting', 'Planting new hedges for privacy, screening and a clean border.'],
+    ['Trimming', 'Regular hedge trimming to keep a clean, even shape.'],
+    ['Height Reduction', 'Bringing overgrown hedges back down to a manageable height.'] ] }
+].sort(function (a, b) { return a.name.localeCompare(b.name); });
+
+/* ---------- smooth scrolling ---------- */
+var navRaf = 0;
+function ease(t) { return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
+function glideWindow(target, dur) {
+  var start = window.pageYOffset;
+  var dist = target - start;
+  cancelAnimationFrame(navRaf);
+  if (Math.abs(dist) < 2) return;
+  dur = dur || Math.min(1400, Math.max(700, Math.abs(dist) * 0.45));
+  var t0 = performance.now();
+  function tick(now) {
+    var t = Math.min(1, (now - t0) / dur);
+    window.scrollTo(0, start + dist * ease(t));
+    if (t < 1) navRaf = requestAnimationFrame(tick);
+  }
+  navRaf = requestAnimationFrame(tick);
+}
+function goToEl(el) {
+  if (!el) return;
+  var top = el.getBoundingClientRect().top + window.pageYOffset - 76;
+  glideWindow(Math.max(0, top));
+}
+
+/* ---------- drag tracks ---------- */
+function makeDrag(el, lBtn, rBtn, opts) {
+  opts = opts || {};
+  var d = { down: false, moved: false, startX: 0, startScroll: 0, lastX: 0, lastT: 0, v: 0, raf: 0, target: 0 };
+  function edges() {
+    if (lBtn) lBtn.classList.toggle('hidden', !(el.scrollLeft > 4));
+    if (rBtn) rBtn.classList.toggle('hidden', !(el.scrollLeft + el.clientWidth < el.scrollWidth - 4));
+  }
+  function glideTo(target, dur) {
+    var max = el.scrollWidth - el.clientWidth;
+    target = Math.max(0, Math.min(max, target));
+    cancelAnimationFrame(d.raf);
+    if (dur) {
+      var start = el.scrollLeft, dist = target - start, t0 = performance.now();
+      if (Math.abs(dist) < 1) return;
+      var tick = function (now) { var t = Math.min(1, (now - t0) / dur); el.scrollLeft = start + dist * ease(t); if (t < 1) d.raf = requestAnimationFrame(tick); };
+      d.raf = requestAnimationFrame(tick);
+      return;
+    }
+    d.target = target;
+    var step = function () { var diff = d.target - el.scrollLeft; if (Math.abs(diff) < 0.5) { el.scrollLeft = d.target; return; } el.scrollLeft += diff * 0.12; d.raf = requestAnimationFrame(step); };
+    d.raf = requestAnimationFrame(step);
+  }
+  el.addEventListener('pointerdown', function (e) {
+    if (e.pointerType === 'touch' || e.button !== 0) return;
+    cancelAnimationFrame(d.raf);
+    d.down = true; d.moved = false; d.startX = e.clientX; d.startScroll = el.scrollLeft; d.lastX = e.clientX; d.lastT = performance.now(); d.v = 0;
+    el.style.cursor = 'grabbing';
+  });
+  window.addEventListener('pointermove', function (e) {
+    if (!d.down) return;
+    var dx = e.clientX - d.startX;
+    if (Math.abs(dx) > 5) d.moved = true;
+    el.scrollLeft = d.startScroll - dx;
+    var now = performance.now(); d.v = (e.clientX - d.lastX) / Math.max(1, now - d.lastT); d.lastX = e.clientX; d.lastT = now;
+  });
+  function up() { if (!d.down) return; d.down = false; el.style.cursor = ''; if (d.moved) glideTo(el.scrollLeft - d.v * 320); }
+  window.addEventListener('pointerup', up);
+  window.addEventListener('pointercancel', up);
+  el.addEventListener('click', function (e) { if (d.moved) { e.preventDefault(); e.stopPropagation(); d.moved = false; } }, true);
+  el.addEventListener('dragstart', function (e) { e.preventDefault(); });
+  el.addEventListener('scroll', edges, { passive: true });
+  window.addEventListener('resize', edges);
+  if (lBtn) lBtn.addEventListener('click', function () { glideTo(el.scrollLeft - el.clientWidth * 0.66); });
+  if (rBtn) rBtn.addEventListener('click', function () { glideTo(el.scrollLeft + el.clientWidth * 0.66); });
+  setTimeout(edges, 0);
+  return { glideTo: glideTo, edges: edges };
+}
+
+/* ---------- home: service tiles ---------- */
+var svcTrack = $('svc-track');
+var selected = 'landscape';
+svcTrack.innerHTML = HOME_SERVICES.map(function (s) {
+  if (s.isAll) return '<a href="#services" draggable="false" class="svc svc-all" data-all="1"><span class="svc-title">' + esc(s.title) + '</span></a>';
+  return '<button type="button" class="svc svc-' + s.id + (s.id === selected ? ' on' : '') + '" data-id="' + s.id + '" aria-pressed="' + (s.id === selected) + '" aria-controls="service-info"><span class="svc-title">' + esc(s.title) + '</span><span class="svc-fade" aria-hidden="true"></span></button>';
+}).join('');
+var svcDrag = makeDrag(svcTrack, $('svc-l'), $('svc-r'));
+var info = $('info');
+function renderInfo() {
+  var s = HOME_SERVICES.filter(function (x) { return x.id === selected; })[0];
+  if (!s) {
+    info.innerHTML = '<div style="text-align:center;display:flex;flex-direction:column;gap:18px"><h2 style="margin:0;font-weight:500;font-size:36px">Reliable and Quality Service</h2><p style="margin:0;font-size:19px;font-weight:300;line-height:1.75;color:#3D3D3D">Take a break and let Northern Ninja Services take care of your property. We use the latest tools and equipment to get your job done quickly and efficiently — fully licensed, insured and WorkSafeBC covered, and certified in Residential Landscape Maintenance.</p><p style="margin:0;font-size:16px;color:#555">Choose a service above to learn more.</p></div>';
+    return;
+  }
+  info.innerHTML = '<div class="info-row"><p>' + esc(s.blurb) + '</p><a class="more" href="#svc-' + s.cat + '">More info<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></a></div>' +
+    '<ul class="chips">' + s.items.map(function (i) { return '<li>' + esc(i) + '</li>'; }).join('') + '</ul>';
+}
+renderInfo();
+var fadeTimer = 0;
+svcTrack.addEventListener('click', function (e) {
+  var b = e.target.closest('button.svc');
+  if (!b) return;
+  var id = b.getAttribute('data-id');
+  var next = selected === id ? null : id;
+  Array.prototype.forEach.call(svcTrack.querySelectorAll('button.svc'), function (t) {
+    var on = t.getAttribute('data-id') === next;
+    t.classList.toggle('on', on); t.setAttribute('aria-pressed', on);
+  });
+  var tr = svcTrack.getBoundingClientRect(), r = b.getBoundingClientRect();
+  svcDrag.glideTo(svcTrack.scrollLeft + (r.left + r.width / 2) - (tr.left + tr.width / 2), 800);
+  clearTimeout(fadeTimer);
+  info.style.opacity = 0;
+  fadeTimer = setTimeout(function () { selected = next; renderInfo(); info.style.opacity = 1; }, 400);
+});
+
+/* ---------- home: instagram ---------- */
+var igTrack = $('ig-track');
+igTrack.innerHTML = IG_PHOTOS.map(function (p, i) {
+  var ov = (i === 0 || i === IG_PHOTOS.length - 1) ? '<div class="ig-ov"><a class="ig-btn" href="' + IG_URL + '" draggable="false" aria-label="Go to our Instagram">' + CAM + '</a></div>' : '';
+  return '<div class="ig"><img src="img/' + p + '.jpg" alt="Recent Northern Ninja project" draggable="false" loading="lazy">' + ov + '</div>';
+}).join('');
+var igDrag = makeDrag(igTrack, $('ig-l'), $('ig-r'));
+igTrack.addEventListener('mouseover', function (e) {
+  var tile = e.target.closest('.ig');
+  if (!tile) return;
+  var tr = igTrack.getBoundingClientRect(), r = tile.getBoundingClientRect(), grow = r.width * 0.15;
+  tile.style.transformOrigin = (r.left - tr.left < grow) ? 'left center' : (tr.right - r.right < grow) ? 'right center' : 'center center';
+});
+function igStart() { var f = igTrack.firstElementChild; if (f && f.offsetWidth) { igTrack.scrollLeft = f.offsetWidth; igDrag.edges(); } }
+
+/* ---------- reviews ---------- */
+$('rv-row').innerHTML = [1, 2, 3].map(function () {
+  return '<figure class="rv"><div style="display:flex;gap:3px" role="img" aria-label="5 out of 5 stars">' + STAR + STAR + STAR + STAR + STAR + '</div><blockquote>[Paste a real Google review here]</blockquote><figcaption><span style="font-weight:500;font-size:16px">[Reviewer name]</span><span style="font-size:14px;color:#555">Google review</span></figcaption></figure>';
+}).join('') + '<a class="rv-go" href="https://www.google.com/search?q=northern+ninja+services"><span style="display:flex;flex-direction:column;align-items:center;gap:2px"><span style="font-size:21px;font-weight:500;line-height:1.25">Go to Google Reviews</span><span style="font-size:15px;line-height:1.3;color:#E8F3E9">52 reviews</span></span><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m10.5 8 4 4-4 4"/></svg></a>';
+
+/* ---------- services page ---------- */
+var cats = $('cats');
+cats.innerHTML = CATEGORIES.map(function (c, ci) {
+  return '<div class="cat" id="cat-' + c.id + '" style="background:' + (ci % 2 === 0 ? '#F4F5F6' : '#FFFFFF') + '">' +
+    '<button type="button" class="acc" aria-expanded="false" aria-controls="panel-' + c.id + '"><span class="acc-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span><span class="acc-name">' + esc(c.name) + '</span></button>' +
+    '<div class="panel" id="panel-' + c.id + '"><div><div class="pin">' +
+    '<ul class="subs">' + c.items.map(function (it, i) { return '<li><button type="button" class="sub" data-i="' + i + '" aria-pressed="false">' + esc(it[0]) + ARROW_R + '</button></li>'; }).join('') + '</ul>' +
+    '<div class="det-area" aria-live="polite"><div class="ph ph-main">Image coming soon</div></div>' +
+    '</div></div></div></div>';
+}).join('');
+function setOpen(id) {
+  Array.prototype.forEach.call(cats.querySelectorAll('.cat'), function (row) {
+    var on = row.id === 'cat-' + id;
+    row.classList.toggle('open', on);
+    row.querySelector('.acc').setAttribute('aria-expanded', on);
+  });
+}
+function centerCat(id) {
+  var row = $('cat-' + id);
+  if (!row) return;
+  var btn = row.querySelector('.acc'), pin = row.querySelector('.pin');
+  var finalH = btn.offsetHeight + (pin ? pin.offsetHeight : 0);
+  var top = row.getBoundingClientRect().top + window.pageYOffset;
+  glideWindow(Math.max(0, top - 76 - (window.innerHeight - 76 - finalH) / 2));
+}
+cats.addEventListener('click', function (e) {
+  var acc = e.target.closest('.acc');
+  if (acc) {
+    var row = acc.parentElement;
+    setOpen(row.classList.contains('open') ? null : row.id.slice(4));
+    return;
+  }
+  var sub = e.target.closest('.sub');
+  if (!sub) return;
+  var rowEl = sub.closest('.cat');
+  var c = CATEGORIES.filter(function (x) { return 'cat-' + x.id === rowEl.id; })[0];
+  var i = Number(sub.getAttribute('data-i'));
+  var wasOn = sub.classList.contains('on');
+  var anyOn = !!rowEl.querySelector('.sub.on');
+  Array.prototype.forEach.call(rowEl.querySelectorAll('.sub'), function (b) { var on = !wasOn && b === sub; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on); });
+  var area = rowEl.querySelector('.det-area');
+  function paint() {
+    area.innerHTML = wasOn ? '<div class="ph ph-main">Image coming soon</div>' : '<div class="sub-det"><p>' + esc(c.items[i][1]) + '</p><div class="ph ph-sub">Image coming soon</div></div>';
+    area.style.opacity = 1;
+  }
+  if (anyOn) { area.style.opacity = 0; setTimeout(paint, 300); } else paint();
+});
+
+/* ---------- routing (#home, #services, #svc-<category>) ---------- */
+function showPage(name) {
+  var isServices = name === 'services';
+  $('page-home').classList.toggle('hidden', isServices);
+  $('page-services').classList.toggle('hidden', !isServices);
+  Array.prototype.forEach.call(document.querySelectorAll('.only-home'), function (el) { el.classList.toggle('hidden', isServices); });
+  Array.prototype.forEach.call(document.querySelectorAll('.only-services'), function (el) { el.classList.toggle('hidden', !isServices); });
+  if (isServices) $('nav-services').setAttribute('aria-current', 'page'); else $('nav-services').removeAttribute('aria-current');
+  if (!isServices) setTimeout(function () { svcDrag.edges(); igDrag.edges(); }, 0);
+}
+var pendingScroll = null;
+function route() {
+  var h = (location.hash || '').slice(1);
+  if (h.indexOf('svc-') === 0) {
+    var id = h.slice(4);
+    showPage('services');
+    window.scrollTo(0, 0);
+    setOpen(id);
+    setTimeout(function () { centerCat(id); }, 30);
+    return;
+  }
+  if (h === 'services') { showPage('services'); setOpen(null); window.scrollTo(0, 0); return; }
+  showPage('home');
+  if (pendingScroll) { var t = pendingScroll; pendingScroll = null; setTimeout(function () { goToEl($(t)); }, 30); }
+  else window.scrollTo(0, 0);
+}
+window.addEventListener('hashchange', route);
+
+/* header links */
+document.querySelector('header').addEventListener('click', function (e) {
+  var a = e.target.closest('[data-go]');
+  if (!a) return;
+  var go = a.getAttribute('data-go');
+  var onServices = !$('page-services').classList.contains('hidden');
+  if (go === 'reviews' || go === 'contact') { e.preventDefault(); goToEl($(go)); return; }
+  if (go === 'services-top') {
+    if (onServices) { e.preventDefault(); setOpen(null); glideWindow(0); }
+    return;
+  }
+  if (go === 'home-top') {
+    if (!onServices) { e.preventDefault(); glideWindow(0); }
+    return;
+  }
+  if (go === 'work') {
+    e.preventDefault();
+    if (onServices) { pendingScroll = 'work'; location.hash = 'home'; } else goToEl($('work'));
+  }
+});
+
+/* ---------- contact form ---------- */
+var picked = [];
+var sendAs = 'email';
+var svcInput = $('svc-input');
+function renderPicker() {
+  $('svc-suggest').innerHTML = FORM_SERVICES.filter(function (x) { return picked.indexOf(x) === -1; }).map(function (x) { return '<option value="' + esc(x) + '"></option>'; }).join('');
+  $('picked').innerHTML = picked.map(function (p, i) {
+    return '<li>' + esc(p) + '<button type="button" data-rm="' + i + '" aria-label="Remove ' + esc(p) + '"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></li>';
+  }).join('');
+}
+function addService(raw) {
+  var v = String(raw || '').trim();
+  if (!v) return;
+  if (!picked.some(function (x) { return x.toLowerCase() === v.toLowerCase(); })) picked.push(v);
+  svcInput.value = '';
+  renderPicker();
+}
+svcInput.addEventListener('input', function (e) {
+  var it = e.inputType;
+  if (FORM_SERVICES.indexOf(svcInput.value) !== -1 && (!it || it === 'insertReplacementText')) addService(svcInput.value);
+});
+svcInput.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); addService(svcInput.value); } });
+$('svc-add').addEventListener('click', function () { addService(svcInput.value); });
+$('picked').addEventListener('click', function (e) { var b = e.target.closest('[data-rm]'); if (!b) return; picked.splice(Number(b.getAttribute('data-rm')), 1); renderPicker(); });
+renderPicker();
+Array.prototype.forEach.call(document.querySelectorAll('.seg'), function (b) {
+  b.addEventListener('click', function () {
+    sendAs = b.getAttribute('data-send');
+    Array.prototype.forEach.call(document.querySelectorAll('.seg'), function (x) { x.setAttribute('aria-checked', x === b); });
+  });
+});
+$('quote').addEventListener('submit', function (e) {
+  e.preventDefault();
+  var f = new FormData(e.target);
+  var note = $('form-note');
+  if (!String(f.get('name') || '').trim() || !String(f.get('phone') || '').trim()) { note.textContent = 'Please add your name and phone number.'; return; }
+  var addr = String(f.get('address') || '');
+  var lines = [
+    'Name: ' + f.get('name'), 'Phone: ' + f.get('phone'), 'Email: ' + (f.get('email') || ''), 'Address: ' + addr,
+    addr ? 'Map: https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(addr) : '',
+    'Services: ' + (picked.join(', ') || 'Not specified'),
+    'Preferred contact: ' + (f.get('contactMethod') || 'Not specified'), '', String(f.get('message') || '')
+  ].join('\n');
+  var body = encodeURIComponent(lines);
+  var url = sendAs === 'text' ? 'sms:+12365163910?&body=' + body : 'mailto:info@ninjaservices.ca?subject=' + encodeURIComponent('Quote request — ' + f.get('name')) + '&body=' + body;
+  note.textContent = sendAs === 'text'
+    ? 'Opening your messaging app… If nothing opens, text us at (236) 516-3910.'
+    : 'Opening your email app… If nothing opens, email us at info@ninjaservices.ca.';
+  try { window.location.href = url; } catch (err) {}
+});
+
+/* ---------- start ---------- */
+route();
+window.addEventListener('load', function () { igStart(); svcDrag.edges(); });
+setTimeout(igStart, 100);
+})();
+</script>
+</body>
+</html>
